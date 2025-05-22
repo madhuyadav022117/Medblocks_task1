@@ -5,6 +5,7 @@ import { PGliteProvider } from "@electric-sql/pglite-react";
 
 // styles
 import "./App.css";
+import AppLayout from "./layout/AppLayout";
 
 
 const db = await PGlite.create({
@@ -32,7 +33,7 @@ await db.exec(`
 function App() {
   return (
     <PGliteProvider db={db}>
-    
+      <AppLayout />
     </PGliteProvider>
   );
 }

@@ -1,0 +1,1 @@
+export const CREATE_PATIENT_QUERY = `INSERT INTO patients (id,firstName,lastName,dob,gender,email,phone,address,insurance_provider,insurance_id,notes,registeration_time) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`;
