@@ -6,6 +6,7 @@ import { MENU_IDS, MENU_IDS_VS_LABELS } from "../utils/constants";
 import Dashboard from "../components/Dashboard";
 import StepRegisterPatientForm from "../components/StepRegisterPatientForm";
 import Sidebar from "../components/Sidebar";
+import RecordManager from "../components/RecordManager";
 
 
 const { Content, Sider } = Layout;
@@ -26,7 +27,7 @@ const MainLayout = () => {
         return <></>;
 
       case MENU_IDS.PATIENT_LIST:
-        return <></>;
+        return <RecordManager />;
 
       default:
         return <Dashboard setSelectedKey={setSelectedKey} />;
