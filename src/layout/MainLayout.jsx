@@ -7,6 +7,7 @@ import Dashboard from "../components/Dashboard";
 import StepRegisterPatientForm from "../components/StepRegisterPatientForm";
 import Sidebar from "../components/Sidebar";
 import RecordManager from "../components/RecordManager";
+import PatientQuery from "../components/PatientQuery";
 
 
 const { Content, Sider } = Layout;
@@ -24,7 +25,7 @@ const MainLayout = () => {
         return <StepRegisterPatientForm />;
 
       case MENU_IDS.QUERY_PATIENTS:
-        return <></>;
+        return <PatientQuery />;
 
       case MENU_IDS.PATIENT_LIST:
         return <RecordManager />;
