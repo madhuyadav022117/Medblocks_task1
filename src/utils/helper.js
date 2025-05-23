@@ -1,3 +1,4 @@
+// constants
 import { COLUMNS } from "./constants";
 
 export const adaptItems = (items = []) => {
@@ -37,4 +38,26 @@ export const getParsedTableData = (tableData) => {
     rows: parsedRows,
     totalCount: parsedRows.length,
   };
+};
+
+export const handleCopyJson = async (data) => {
+  try {
+    const jsonString = JSON.stringify(data, null, 2);
+    await navigator.clipboard.writeText(jsonString);
+  } catch (err) {
+    console.error("Failed to copy JSON to clipboard", err);
+  }
+};
+
+export const handleDownloadJson = (data, filename = "data.json") => {
+  const jsonString = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonString], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+
+  URL.revokeObjectURL(url);
 };

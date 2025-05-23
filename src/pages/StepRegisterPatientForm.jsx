@@ -1,4 +1,9 @@
-import { usePGlite } from "@electric-sql/pglite-react";
+// libs
+import { useState } from "react";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+// components
 import {
   Button,
   Col,
@@ -12,18 +17,19 @@ import {
   message,
   notification,
 } from "antd";
-import { CREATE_PATIENT_QUERY } from "../utils/queries";
-import { nanoid } from "nanoid";
-import { useState } from "react";
-import dayjs from "dayjs";
 
-import customParseFormat from "dayjs/plugin/customParseFormat";
+// hooks
+import { usePatientBroadcast } from "../hooks/usePatientBroadcast";
+
+// utils
+import { registerPatient } from "../services/DatabaseService";
+
 dayjs.extend(customParseFormat);
 
 const { Step } = Steps;
 
 const StepRegisterPatientForm = () => {
-  const db = usePGlite();
+  const { broadcastChange } = usePatientBroadcast(() => {});
   const [api, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
@@ -41,42 +47,10 @@ const StepRegisterPatientForm = () => {
 
   const onCreate = async () => {
     const values = await form.getFieldsValue(true);
-    const id = parseInt(nanoid(10).replace(/\D/g, "").slice(0, 9), 10);
-    if (isNaN(id)) {
-      message.error("Failed to generate patient ID!");
-      return;
-    }
-    const {
-      firstName,
-      lastName,
-      dob,
-      gender,
-      email,
-      phone,
-      address,
-      insuranceProvider,
-      insuranceId,
-      notes,
-    } = values;
-
-    const formattedDob = dob.toISOString().split("T")[0];
 
     try {
-      await db.query(CREATE_PATIENT_QUERY, [
-        id,
-        firstName,
-        lastName,
-        formattedDob,
-        gender,
-        email,
-        phone,
-        address,
-        insuranceProvider,
-        insuranceId,
-        notes,
-        new Date().toLocaleDateString(),
-      ]);
-
+      await registerPatient(values);
+      broadcastChange("patient-added");
       api.success({
         message: "Patient added successfully",
       });

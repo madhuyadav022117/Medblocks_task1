@@ -1,14 +1,19 @@
+// libs
 import React, { useState } from "react";
+
+// components
 import { Flex, Layout } from "antd";
 import { Typography } from "antd";
-
-import { MENU_IDS, MENU_IDS_VS_LABELS } from "../utils/constants";
-import Dashboard from "../components/Dashboard";
-import StepRegisterPatientForm from "../components/StepRegisterPatientForm";
 import Sidebar from "../components/Sidebar";
-import RecordManager from "../components/RecordManager";
-import PatientQuery from "../components/PatientQuery";
 
+// pages
+import RecordManager from "../pages/RecordManager";
+import Dashboard from "../pages/Dashboard";
+import PatientQuery from "../pages/PatientQuery";
+import StepRegisterPatientForm from "../pages/StepRegisterPatientForm";
+
+// constannts
+import { MENU_IDS, MENU_IDS_VS_LABELS } from "../utils/constants";
 
 const { Content, Sider } = Layout;
 const { Title, Text } = Typography;

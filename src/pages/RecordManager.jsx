@@ -1,15 +1,46 @@
-import { useLiveQuery, usePGlite } from "@electric-sql/pglite-react";
+// libs
+import { useEffect, useState } from "react";
+
+// components
 import { Alert, Button, notification, Popconfirm, Table } from "antd";
-import { useState } from "react";
+
+// hooks
+import { useDatabaseContext } from "../context/DatabaseContext";
+import { usePatientBroadcast } from "../hooks/usePatientBroadcast";
+import { useHandleBulkDelete } from "../hooks/useHandleBulkDelete";
+
+// utils
 import { getParsedTableData } from "../utils/helper";
+import { getAllPatients } from "../services/DatabaseService";
 
 const RecordManager = () => {
-  const db = usePGlite();
+  const { isInitialized } = useDatabaseContext();
   const [api, contextHolder] = notification.useNotification();
-  const items = useLiveQuery(`SELECT * FROM patients`);
+  const [patients, setPatients] = useState([]);
+
+  useEffect(() => {
+    if (isInitialized) {
+      loadPatients();
+    }
+  }, [isInitialized]);
+
+  const loadPatients = async () => {
+    try {
+      const patientData = await getAllPatients();
+      setPatients(patientData);
+    } catch (error) {
+      console.error("Error loading patients:", error);
+    }
+  };
+
+  usePatientBroadcast((msg) => {
+    if (msg.type === "patient-added" || msg.type === "patients-deleted") {
+      loadPatients();
+    }
+  });
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const { rows, columns } = getParsedTableData(items);
+  const { rows, columns } = getParsedTableData(patients);
 
   const rowSelection = {
     type: "checkbox",
@@ -19,23 +50,24 @@ const RecordManager = () => {
     },
   };
 
+  const { handleDelete } = useHandleBulkDelete();
+
   const handleBulkDelete = async () => {
-    const placeholders = selectedRowKeys.map((_, i) => `$${i + 1}`).join(",");
-    try {
-      await db.query(
-        `DELETE FROM patients WHERE id in (${placeholders})`,
-        selectedRowKeys
-      );
-      api.success({
-        message: "Record Deleted Successfully",
-      });
-      setSelectedRowKeys([]);
-    } catch (error) {
-      api.error({
-        message: "Failed to delete record",
-        description: error.message,
-      });
-    }
+    await handleDelete({
+      selectedRowKeys,
+      onSuccess: () => {
+        api.success({
+          message: "Record Deleted Successfully",
+        });
+        setSelectedRowKeys([]);
+      },
+      onFailure: (error) => {
+        api.error({
+          message: "Failed to delete record",
+          description: error.message,
+        });
+      },
+    });
   };
 
   return (

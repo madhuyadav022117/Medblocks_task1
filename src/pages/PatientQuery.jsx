@@ -1,4 +1,7 @@
+// libs
 import { useState } from "react";
+
+// components
 import {
   Button,
   Col,
@@ -12,7 +15,11 @@ import {
   Layout,
   notification,
 } from "antd";
-import { usePGlite } from "@electric-sql/pglite-react";
+import { DownloadOutlined, CopyOutlined } from "@ant-design/icons";
+
+// utils
+import { executeQuery } from "../services/DatabaseService";
+import { handleCopyJson, handleDownloadJson } from "../utils/helper";
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -30,8 +37,11 @@ const templateQueries = [
 ];
 
 const PatientQuery = () => {
-  const db = usePGlite();
-  const [api, contextHolder] = notification.useNotification();
+  const [api, contextHolder] = notification.useNotification({
+    stack: {
+      threshold: 2,
+    },
+  });
   const [sql, setSql] = useState("");
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -46,7 +56,7 @@ const PatientQuery = () => {
     }
 
     try {
-      const result = await db.query(sql);
+      const result = await executeQuery(sql);
       const rows = result.rows || [];
 
       if (rows.length === 0) {
@@ -83,12 +93,44 @@ const PatientQuery = () => {
         };
       });
 
-      console.log("Query Result:", keyedData);
+      api.success({
+        message: "Query Executed Successfully",
+        duration: 3,
+      });
+
       setColumns(dynamicColumns);
       setData(keyedData);
     } catch (error) {
       api.error({
         message: "Query Error",
+        description: error.message,
+        duration: 3,
+      });
+    }
+  };
+
+  const handleCopyJSON = async () => {
+    try {
+      await handleCopyJson(data);
+      api.success({
+        message: "Copied Successfully",
+        duration: 3,
+      });
+    } catch (error) {
+      api.error({
+        message: "Something went wrong!",
+        description: error.message,
+        duration: 3,
+      });
+    }
+  };
+
+  const handleDownloadResult = async () => {
+    try {
+      handleDownloadJson(data);
+    } catch (error) {
+      api.error({
+        message: "Something went wrong!",
         description: error.message,
         duration: 3,
       });
@@ -145,7 +187,28 @@ const PatientQuery = () => {
 
       {/* Bottom Section: Query Result Table */}
       <Table
-        title={() => <Text strong>Query Results</Text>}
+        title={() => (
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Text>Query Result</Text>
+            <div>
+              <Button
+                type="primary"
+                icon={<CopyOutlined />}
+                onClick={handleCopyJSON}
+              >
+                Copy
+              </Button>
+              <Button
+                type="primary"
+                style={{ marginInline: "1rem" }}
+                icon={<DownloadOutlined />}
+                onClick={handleDownloadResult}
+              >
+                Download
+              </Button>
+            </div>
+          </div>
+        )}
         dataSource={data}
         columns={columns}
         pagination={{ pageSize: 2, position: ["topRight"] }}

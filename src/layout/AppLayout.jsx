@@ -3,11 +3,10 @@ import { Layout } from "antd";
 import { Footer, Header } from "antd/es/layout/layout";
 
 // components
-
+import MainLayout from "./MainLayout";
 
 // utils
 import theme from "../theme";
-import MainLayout from "./MainLayout";
 
 const AppLayout = () => {
   return (
@@ -22,9 +21,7 @@ const AppLayout = () => {
         MedBlocks
       </Header>
       <MainLayout />
-      <Footer style={{ textAlign: "center" }}>
-        © 2025 Patient Management Portal. All rights reserved.
-      </Footer>
+      <Footer style={{ textAlign: "center" }}>Build using PGLite</Footer>
     </Layout>
   );
 };

@@ -1,21 +1,18 @@
 export const COLUMNS = [
   {
-    title: "Id",
+    title: "ID",
     dataIndex: "id",
     key: "id",
     fixed: "left",
-    width: 50,
+    width: 60,
     sorter: (a, b) => a.id - b.id,
+    defaultSortOrder: "ascend",
   },
   {
-    title: "First Name",
-    dataIndex: "firstName",
-    key: "firstName",
-  },
-  {
-    title: "Last Name",
-    dataIndex: "lastName",
-    key: "lastName",
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+    render: (_, record) => `${record.firstName} ${record.lastName}`,
   },
   {
     title: "Date of Birth",
@@ -41,21 +38,6 @@ export const COLUMNS = [
     title: "Registered At",
     dataIndex: "registeration_time",
     key: "registeration_time",
-  },
-  {
-    title: "Insurance Provider",
-    dataIndex: "insurance_provider",
-    key: "insurance_provider",
-  },
-  {
-    title: "Insurance Id",
-    dataIndex: "insurance_id",
-    key: "insurance_id",
-  },
-  {
-    title: "Medical Notes",
-    dataIndex: "notes",
-    key: "notes",
   },
 ];
 

@@ -1,5 +1,4 @@
-// Sidebar.tsx
-import React from "react";
+// components
 import {
   HomeOutlined,
   UserAddOutlined,
@@ -7,9 +6,9 @@ import {
   UsergroupDeleteOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
+
+// constants
 import { MENU_IDS_VS_LABELS, MENU_IDS } from "../utils/constants";
-
-
 
 const items = [
   {
@@ -33,7 +32,6 @@ const items = [
     label: MENU_IDS_VS_LABELS["PATIENT_LIST"].label,
   },
 ];
-
 
 const Sidebar = ({ onSelect, selectedKey }) => {
   return (
